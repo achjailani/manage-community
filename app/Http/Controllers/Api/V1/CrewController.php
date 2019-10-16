@@ -22,6 +22,8 @@ class CrewController extends Controller
 
     	$attributes = $request->json()->all();
     	
+        $this->validator($attributes)->validate();
+
     	Crew::create($attributes);
 
     	return response(
@@ -42,6 +44,8 @@ class CrewController extends Controller
     public function updateSingleCrewData(Request $request, $crewId){
 
         $attributes = $request->json()->all();
+
+        $this->validate($attributes)->validate();
         
         Crew::findOrFail($crewId)
                    ->update($attributes);
@@ -60,5 +64,17 @@ class CrewController extends Controller
 
         return response()->json("successfully deleted!");
 
+    }
+
+    public function validator(array $data)
+    {
+        return Validator::make($data,[
+            'community_id' => 'required|numeric|max:20',
+            'position_id' => 'required|numeric|max:20',
+            'name'  => 'required|string|max:50',
+            'email' => 'required|string|max:50|email',
+            'phone' => 'required|max:12|numeric',
+            'status' => 'required|string|max:20'
+        ]);
     }
 }
